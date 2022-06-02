@@ -1,5 +1,4 @@
 const background = chrome.extension.getBackgroundPage()
-console.log(background)
 
 const main = document.getElementById('main')
 
@@ -25,7 +24,6 @@ function render() {
   if (r.length === 0) renderEmptyResult()
   else
     r.forEach(({ type, result }) => {
-      console.log(type, result)
       if (type === 'request') return renderRequest(result)
       if (type === 'redirect') return renderRedirect(result)
       if (type === 'response') return renderResponse(result)

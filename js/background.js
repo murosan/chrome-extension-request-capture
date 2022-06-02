@@ -9,7 +9,6 @@ function pushResult(resultType, result) {
   const options = { active: true, currentWindow: true }
   chrome.tabs.query(options, tabs => {
     const currentTab = tabs[0]
-    console.log(tabId, currentTab.id)
     if (tabId !== currentTab.id) return
 
     const before = window.Results
