@@ -1,0 +1,218 @@
+body {
+  padding: 10px;
+  background-color: rgb(240, 238, 238);
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', YuGothic,
+    'ヒラギノ角ゴ ProN W3', Hiragino Kaku Gothic ProN, Arial, 'メイリオ', Meiryo,
+    sans-serif;
+  width: 500px;
+  min-height: 100px;
+  font-size: 16px;
+  color: rgb(34, 34, 34);
+  position: relative;
+}
+
+div,
+span,
+details,
+summary {
+  box-sizing: border-box;
+}
+
+details summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.secondary {
+  background-color: rgb(108, 117, 125);
+}
+
+.success {
+  background-color: rgb(30, 160, 99);
+}
+
+.redirect {
+  background-color: rgb(8, 167, 198);
+}
+
+.warn {
+  background-color: rgb(233, 175, 1);
+}
+
+.danger {
+  background-color: rgb(237, 74, 90);
+}
+
+.tool-bar {
+  display: flex;
+  margin-bottom: 5px;
+  width: 100%;
+  height: 30px;
+}
+
+.clear-button-container {
+  display: flex;
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.tool-bar .clear-button {
+  display: inline-block;
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.tool-bar .clear-button::before,
+.tool-bar .clear-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 30px;
+  background: #333;
+  border-radius: 2.5px;
+}
+
+.tool-bar .clear-button::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.tool-bar .clear-button::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.tool-bar .clear-button-description {
+  display: none;
+}
+
+.tool-bar .clear-button-description span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: menlo;
+  letter-spacing: -1px;
+}
+
+.tool-bar .clear-button-container {
+  width: 30px;
+}
+
+.tool-bar .clear-button-container:hover {
+  width: 155px;
+}
+
+.tool-bar .clear-button-container:hover .clear-button-description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  width: 125px;
+}
+
+.result-container {
+  position: relative;
+  margin-top: 5px;
+  padding-right: 10px;
+  width: 480px;
+  display: inline-block;
+  background-color: rgb(246, 250, 253);
+  box-shadow: 0px 0px 10px -1px rgb(186, 186, 186);
+  overflow: hidden;
+}
+
+.result-container:last-child {
+  margin-bottom: 6px;
+}
+
+.request-summary,
+.redirect-summary,
+.response-summary {
+  line-height: 3rem;
+}
+
+.request-summary {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+.redirect-summary,
+.response-summary {
+  padding-left: 10px;
+  margin-right: -10px;
+  font-family: menlo;
+  color: white;
+}
+
+.method {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.url {
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+  overflow-y: hidden;
+  font-family: menlo;
+  letter-spacing: -0.8px;
+  white-space: nowrap;
+}
+
+.result-detail {
+  position: relative;
+  padding: 0 10px 10px;
+  font-family: menlo;
+  font-size: 13px;
+  line-height: 1.7rem;
+}
+
+.horizontal-detail,
+.vertical-detail {
+  margin-top: 5px;
+  border-bottom: 1px solid rgb(218, 218, 218);
+}
+
+.horizontal-detail:last-child,
+.vertical-detail:last-child,
+.vertical-detail .horizontal-detail {
+  border: none;
+}
+
+.horizontal-detail {
+  width: 100%;
+  display: block;
+}
+
+.horizontal-detail div {
+  display: inline-block;
+}
+
+.result-detail .label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.vertical-detail .horizontal-detail {
+  margin: 0;
+  font-size: smaller;
+}
+
+.vertical-detail .horizontal-detail .label {
+  font-weight: normal;
+  color: rgb(106, 106, 106);
+}
+
+.result-detail .value {
+  word-wrap: break-word;
+}
+
+.vertical-detail .value {
+  line-height: 1.3rem;
+}
