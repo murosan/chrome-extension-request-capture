@@ -20,7 +20,7 @@ function render() {
     main.removeChild(main.firstElementChild)
   }
 
-  const r = background.Results || []
+  const r = (background.Results || []).slice().reverse()
   if (r.length === 0) renderEmptyResult()
   else
     r.forEach(({ type, result }) => {
@@ -133,7 +133,7 @@ function verticalDetail(labelText, valueContent) {
 function element(tagName, className, text) {
   const e = document.createElement(tagName)
   e.className = className
-  if (text) e.textContent = text
+  if (text !== undefined) e.textContent = text
   return e
 }
 
