@@ -1,13 +1,15 @@
 {
   "name": "Request Capture",
   "version": "1.0",
-  "manifest_version": 2,
-  "permissions": ["webRequest", "*://*/*"],
-  "browser_action": {
+  "manifest_version": 3,
+  "permissions": ["webRequest", "storage", "tabs"],
+  "action": {
     "default_title": "Request Capture",
     "default_popup": "popup.html"
   },
+  "host_permissions": ["https://*/*"],
   "background": {
-    "page": "background.html"
+    "service_worker": "js/background.js",
+    "type": "module"
   }
 }

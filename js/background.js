@@ -1,3 +1,20 @@
+class Storage {
+  key = 'result'
+
+  async set(value) {
+    await chrome.storage.session.set({ [this.key]: value })
+  }
+
+  async get() {
+    const res = await chrome.storage.session.get(this.key)
+    return res[this.key]
+  }
+
+  async clear() {
+    await chrome.storage.session.clear()
+  }
+}
+
 const MAX_RESULTS = 100
 const RESULT_TYPES = {
   request: 'request',
@@ -9,18 +26,16 @@ let currentRequestId
 let currentStatusCode
 let currentTabId
 
-function clearResults() {
-  window.Results = []
-}
+const storage = new Storage()
 
-function pushResult(resultType, result) {
+async function pushResult(resultType, result) {
   const tabId = result.tabId
   if (tabId !== currentTabId) return
 
   if (currentRequestId !== result.requestId) {
     currentRequestId = result.requestId
     currentStatusCode = 0
-    chrome.browserAction.setBadgeText({})
+    chrome.action.setBadgeText({})
   }
 
   if (resultType !== RESULT_TYPES.request) {
@@ -35,18 +50,15 @@ function pushResult(resultType, result) {
         if (n === 5) return [255, 107, 122, 100]
         return [108, 117, 125, 100]
       })()
-      chrome.browserAction.setBadgeText({ text: `${currentStatusCode}` })
-      chrome.browserAction.setBadgeBackgroundColor({ color })
+      chrome.action.setBadgeText({ text: `${currentStatusCode}` })
+      chrome.action.setBadgeBackgroundColor({ color })
     }
   }
 
-  const before = window.Results
+  const before = (await storage.get()) || []
   const after = before.concat({ type: resultType, result }).slice(-MAX_RESULTS)
-  window.Results = after
+  await storage.set(after)
 }
-
-window.Results = []
-window.ClearResults = () => clearResults()
 
 // https://developer.chrome.com/docs/extensions/reference/tabs/
 //   event-onActivated

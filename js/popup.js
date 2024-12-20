@@ -1,26 +1,42 @@
-const background = chrome.extension.getBackgroundPage()
+class Storage {
+  key = 'result'
+
+  async set(value) {
+    await chrome.storage.session.set({ [this.key]: value })
+  }
+
+  async get() {
+    const res = await chrome.storage.session.get(this.key)
+    return res[this.key]
+  }
+
+  async clear() {
+    await chrome.storage.session.clear()
+  }
+}
+
+const storage = new Storage()
 
 const main = document.getElementById('main')
 
 const Elm = {
   div: (className, text) => element('div', className, text),
-  details: className => element('details', className),
+  details: (className) => element('details', className),
   summary: (className, text) => element('summary', className, text),
 }
 
-document.getElementById('button-clear').addEventListener('click', () => {
-  background.ClearResults()
-  render()
-})
+document
+  .getElementById('button-clear')
+  .addEventListener('click', () => storage.clear().then(() => render()))
 
 render()
 
-function render() {
+async function render() {
   while (main.firstElementChild) {
     main.removeChild(main.firstElementChild)
   }
 
-  const r = (background.Results || []).slice().reverse()
+  const r = ((await storage.get()) || []).slice().reverse()
   if (r.length === 0) renderEmptyResult()
   else
     r.forEach(({ type, result }) => {
