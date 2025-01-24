@@ -1,10 +1,6 @@
 class Storage {
   key = 'result'
 
-  async set(value) {
-    await chrome.storage.session.set({ [this.key]: value })
-  }
-
   async get() {
     const res = await chrome.storage.session.get(this.key)
     return res[this.key]

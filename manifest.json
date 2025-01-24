@@ -7,7 +7,7 @@
     "default_title": "Request Capture",
     "default_popup": "popup.html"
   },
-  "host_permissions": ["https://*/*"],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
     "service_worker": "js/background.js",
     "type": "module"

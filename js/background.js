@@ -1,21 +1,30 @@
 class Storage {
   key = 'result'
+  lock = false
 
-  async set(value) {
-    await chrome.storage.session.set({ [this.key]: value })
+  // fn: async before => after
+  async set(fn) {
+    await this.locker(async () => {
+      const res = await chrome.storage.session.get(this.key)
+      const before = res[this.key]
+      const value = await fn(before)
+      await chrome.storage.session.set({ [this.key]: value })
+    })
   }
 
-  async get() {
-    const res = await chrome.storage.session.get(this.key)
-    return res[this.key]
-  }
-
-  async clear() {
-    await chrome.storage.session.clear()
+  async locker(fn) {
+    for (let i = 0; i < 100; i++) {
+      if (!this.lock) break
+      await new Promise(resolve => setTimeout(resolve, 20))
+    }
+    this.lock = true
+    const value = await fn()
+    this.lock = false
+    return value
   }
 }
 
-const MAX_RESULTS = 100
+const MAX_RESULTS = 200
 const RESULT_TYPES = {
   request: 'request',
   redirect: 'redirect',
@@ -29,8 +38,8 @@ let currentTabId
 const storage = new Storage()
 
 async function pushResult(resultType, result) {
-  const tabId = result.tabId
-  if (tabId !== currentTabId) return
+  // const tabId = result.tabId
+  // if (tabId !== currentTabId) return
 
   if (currentRequestId !== result.requestId) {
     currentRequestId = result.requestId
@@ -55,16 +64,16 @@ async function pushResult(resultType, result) {
     }
   }
 
-  const before = (await storage.get()) || []
-  const after = before.concat({ type: resultType, result }).slice(-MAX_RESULTS)
-  await storage.set(after)
+  await storage.set(async before =>
+    (before || []).concat({ type: resultType, result }).slice(-MAX_RESULTS),
+  )
 }
 
 // https://developer.chrome.com/docs/extensions/reference/tabs/
 //   event-onActivated
 chrome.tabs.query(
   { active: true, currentWindow: true },
-  tabs => (currentTabId = tabs[0].id)
+  tabs => (currentTabId = tabs[0].id),
 )
 chrome.tabs.onActivated.addListener(info => (currentTabId = info.tabId))
 
@@ -81,17 +90,17 @@ const defaultFilter = {
 chrome.webRequest.onBeforeRequest.addListener(
   detail => pushResult(RESULT_TYPES.request, detail),
   defaultFilter,
-  ['requestBody', 'extraHeaders']
+  ['requestBody', 'extraHeaders'],
 )
 
 chrome.webRequest.onBeforeRedirect.addListener(
   detail => pushResult(RESULT_TYPES.redirect, detail),
   defaultFilter,
-  ['responseHeaders', 'extraHeaders']
+  ['responseHeaders', 'extraHeaders'],
 )
 
 chrome.webRequest.onCompleted.addListener(
   detail => pushResult(RESULT_TYPES.response, detail),
   defaultFilter,
-  ['responseHeaders', 'extraHeaders']
+  ['responseHeaders', 'extraHeaders'],
 )
