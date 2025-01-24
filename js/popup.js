@@ -17,7 +17,7 @@ const main = document.getElementById('main')
 
 const Elm = {
   div: (className, text) => element('div', className, text),
-  details: (className) => element('details', className),
+  details: className => element('details', className),
   summary: (className, text) => element('summary', className, text),
 }
 
@@ -32,7 +32,10 @@ async function render() {
     main.removeChild(main.firstElementChild)
   }
 
-  const r = ((await storage.get()) || []).slice().reverse()
+  const r = ((await storage.get()) || [])
+    .slice()
+    .toSorted((a, b) => b.result.timeStamp - a.result.timeStamp)
+
   if (r.length === 0) renderEmptyResult()
   else
     r.forEach(({ type, result }) => {
@@ -75,7 +78,7 @@ function renderRequest(result) {
 function renderRedirect(result) {
   const summary = Elm.summary(
     'redirect-summary redirect',
-    getStatusLine(result)
+    getStatusLine(result),
   )
   const detail = detailForResponse(result)
   detail.appendChild(verticalDetail('Redirect URL', result.redirectUrl))
@@ -139,7 +142,7 @@ function verticalDetail(labelText, valueContent) {
   const label = Elm.div('label', labelText)
   const value = Elm.div(
     'value',
-    typeof valueContent === 'string' ? valueContent : null
+    typeof valueContent === 'string' ? valueContent : null,
   )
   const append = (k, v) => value.appendChild(horizontalDetail(k, v))
   if (!valueContent) console.warn('valueContent is not defined')
